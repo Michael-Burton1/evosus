@@ -1,133 +1,200 @@
-const main = document.querySelector('#main')
-const list = document.querySelector('#list')
-const nation = document.querySelector('#nation')
-const year = document.querySelector('#year')
-const population = document.querySelector('#population')
-const lineChartdisplay = document.querySelector("#line-chart")
 
-//API CALL
-async function getPopulation(){
+//API CALLS
+async function getUSPopulation(){
   const res = await fetch('https://datausa.io/api/data?drilldowns=Nation&measures=Population')
   const data = await res.json();
   return data
 }
 async function getStatePopulation(){
-  const res = await fetch('https://datausa.io/api/data?drilldowns=State&measures=Population&year')
+  const res = await fetch('https://datausa.io/api/data?drilldowns=State&measures=Population')
   const data = await res.json();
   return data
 }
 
-//display results
-async function fetchData(){
-  const data = await getPopulation();
-  return data;
-}
 
-async function fetchStateData(){
-  const data = await getStatePopulation();
-  console.log('data', data)
-  return data;
-}
+//Display charts
+google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.setOnLoadCallback(drawLineColors);
 
-fetchStateData();
-// async function displayData(){
-//   let res = await fetchData();
-//   let populationData = res.data;
-//   console.log('responce data', populationData)
-//   let years = populationData.filter((item => item.Year < 2020))
-//   let yearlyPopulation =years.map(item => {
-//     return (`<ul>${item.Population}</ul>`)
-//   }).join('')
-//   // let individualYears = years.map(item => {
-//     //   return (`<li>${item.Years}</li>`)
-//     // }).join('')
+async function drawLineColors() {
+  let res = await getUSPopulation();
+  let usPopulationData = res.data;
+  let usYearsNeeded = usPopulationData.filter((item => item.Year < 2020 && item.Year > 2012))
+
+  let stateResults = await getStatePopulation();
+  let statePopulationData = stateResults.data;
+  let oregon = statePopulationData.filter((item => item.State === 'Oregon'));
+  let washington = statePopulationData.filter((item => item.State === 'Washington'));
+  let california = statePopulationData.filter((item => item.State === 'California'));
+  let idaho = statePopulationData.filter((item => item.State === 'Idaho'));
+  let alaska = statePopulationData.filter((item => item.State === 'Alaska'));
+  let newYork = statePopulationData.filter((item => item.State === 'New York'));
+  let maryland = statePopulationData.filter((item => item.State === 'Maryland'));
+  let orYearsNeeded = oregon.filter((item => item.Year < 2020 && item.Year > 2012));
+  let mdYearsNeeded = maryland.filter((item => item.Year < 2020 && item.Year > 2012));
+  let waYearsNeeded = washington.filter((item => item.Year < 2020 && item.Year > 2012));
+  let caYearsNeeded = california.filter((item => item.Year < 2020 && item.Year > 2012));
+  let idYearsNeeded = idaho.filter((item => item.Year < 2020 && item.Year > 2012));
+  let akYearsNeeded = alaska.filter((item => item.Year < 2020 && item.Year > 2012));
+  let nyYearsNeeded = newYork.filter((item => item.Year < 2020 && item.Year > 2012));
+
+  let usPopulationArray = [];
+  let usData = new google.visualization.DataTable();
+  usData.addColumn('string', 'Year');
+  usData.addColumn('number', 'US Pop');
+  
+  2
+  for(i=usYearsNeeded.length-1; i>=0 ; i--){
+    usPopulationArray.push([usYearsNeeded[i].Year, usYearsNeeded[i].Population]);
+  }
+
+  //US chart
+  usData.addRows(
+    usPopulationArray
+    );
     
-//     list.innerHTML = yearlyPopulation;
-//   }
-  
-  google.charts.load('current', {packages: ['corechart', 'line']});
-  google.charts.setOnLoadCallback(drawLineColors);
-  
-  async function drawLineColors() {
-    let res = await fetchData();
-    let populationData = res.data;
-    let yearsNeeded = populationData.filter((item => item.Year < 2020 && item.Year > 2012))
-
-    let res2 = await fetchStateData();
-    let populationData2 = res2.data;
-    let oregon = populationData2.filter((item => item.State === 'Oregon'));
-    let newYork = populationData2.filter((item => item.State === 'Maryland'));
-    let orYearsNeeded2 = oregon.filter((item => item.Year < 2020 && item.Year > 2012))
-    console.log('OR', orYearsNeeded2);
-    let nyYearsNeeded2 = newYork.filter((item => item.Year < 2020 && item.Year > 2012))
-    console.log('OR', nyYearsNeeded2);
-
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'year');
-      data.addColumn('number', 'US Pop');
+    var usOptions = {
+      hAxis: {
+        title: 'Year'
+      },
+      vAxis: {
+        title: 'Population'
+      },
+      colors: ['#a52714'],
+      width:700,
+      height:400
       
-      let populationArray = [];
-      // console.log('before', populationArray);
-      
-      for(i=yearsNeeded.length-1; i>=0 ; i--){
-        populationArray.push([yearsNeeded[i].Year, yearsNeeded[i].Population]);
-        console.log('inside step'+i, populationArray);
-      }
-
-      data.addRows(
-        populationArray
-        );
-        
-        var options = {
-          hAxis: {
-            title: 'Year'
-          },
-          vAxis: {
-            title: 'Population'
-          },
-          colors: ['#a52714'],
-          width:700,
-          height:400
-          
-        };
-        
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-        console.log('chart1', chart);
-        chart.draw(data, options);
-        
-        var data2 = new google.visualization.DataTable();
-        data2.addColumn('string', 'year');
-        data2.addColumn('number', 'OR pop');
-        data2.addColumn('number', 'MD Pop');
-        
-        let populationArray2 = [];
-        console.log('before', populationArray2);
-        
-        for(i=orYearsNeeded2.length-1; i>=0 ; i--){
-          populationArray2.push([orYearsNeeded2[i].Year, orYearsNeeded2[i].Population, nyYearsNeeded2[i].Population]);
-          console.log('inside step'+i, populationArray2);
-        }
-        console.log('after', populationArray2);
-        
-        data2.addRows(
-          populationArray2
-          );
-
-          var options = {
-            hAxis: {
-              title: 'Year'
-            },
-            vAxis: {
-              title: 'Population'
-            },
-        colors: ['#a52714', '#000077'],
-        width:700,
-        height:400
-      };
-      
-      var chart2 = new google.visualization.LineChart(document.getElementById('chart_div2'));
-      console.log(chart2)
-      chart2.draw(data2, options);
+    };
+    
+    var usChart = new google.visualization.LineChart(document.getElementById('usChart_div'));
+    usChart.draw(usData, usOptions);
+    
+    //maryland chart
+    var mdData = new google.visualization.DataTable();
+    mdData.addColumn('string', 'Year');
+    mdData.addColumn('number', 'OR Pop');
+    mdData.addColumn('number', 'MD Pop');
+    
+    let mdPopulationArray = [];
+    
+    for(i=orYearsNeeded.length-1; i>=0 ; i--){
+      mdPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, mdYearsNeeded[i].Population]);
     }
     
+    mdData.addRows(
+      mdPopulationArray
+      );
+
+      var options = {
+        hAxis: {
+          title: 'Year'
+        },
+        vAxis: {
+          title: 'Population'
+        },
+    colors: ['#a52714', '#000077'],
+    width:370,
+    height:200
+  };
+  
+  var mdChart = new google.visualization.LineChart(document.getElementById('marylandChart_div'));
+  mdChart.draw(mdData, options);
+
+  //washington chart
+  var waData = new google.visualization.DataTable();
+  waData.addColumn('string', 'Year');
+  waData.addColumn('number', 'OR Pop');
+  waData.addColumn('number', 'WA Pop');
+  
+  let waPopulationArray = [];
+  
+  for(i=orYearsNeeded.length-1; i>=0 ; i--){
+    waPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, waYearsNeeded[i].Population]);
+  }
     
+    waData.addRows(
+      waPopulationArray
+      );
+  
+  var waChart = new google.visualization.LineChart(document.getElementById('washingtonChart_div'));
+  waChart.draw(waData, options);
+
+  //california chart
+  var caData = new google.visualization.DataTable();
+  caData.addColumn('string', 'Year');
+  caData.addColumn('number', 'OR Pop');
+  caData.addColumn('number', 'CA Pop');
+  
+  let caPopulationArray = [];
+  
+  for(i=orYearsNeeded.length-1; i>=0 ; i--){
+    caPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, caYearsNeeded[i].Population]);
+  }
+    
+    caData.addRows(
+      caPopulationArray
+      );
+  
+  var caChart = new google.visualization.LineChart(document.getElementById('californiaChart_div'));
+  caChart.draw(caData, options);
+
+  //idaho chart
+  var idData = new google.visualization.DataTable();
+  idData.addColumn('string', 'Year');
+  idData.addColumn('number', 'OR Pop');
+  idData.addColumn('number', 'ID Pop');
+  
+  let idPopulationArray = [];
+  
+  for(i=orYearsNeeded.length-1; i>=0 ; i--){
+    idPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, idYearsNeeded[i].Population]);
+  }
+    
+    idData.addRows(
+      idPopulationArray
+      );
+  
+  var idChart = new google.visualization.LineChart(document.getElementById('idahoChart_div'));
+  idChart.draw(idData, options);
+
+  //alaska chart
+  var akData = new google.visualization.DataTable();
+  akData.addColumn('string', 'Year');
+  akData.addColumn('number', 'OR Pop');
+  akData.addColumn('number', 'AK Pop');
+  
+  let akPopulationArray = [];
+  
+  for(i=orYearsNeeded.length-1; i>=0 ; i--){
+    akPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, akYearsNeeded[i].Population]);
+  }
+    
+    akData.addRows(
+      akPopulationArray
+      );
+  
+  var akChart = new google.visualization.LineChart(document.getElementById('alaskaChart_div'));
+  akChart.draw(akData, options);
+
+  //new york chart
+  var nyData = new google.visualization.DataTable();
+  nyData.addColumn('string', 'Year');
+  nyData.addColumn('number', 'OR Pop');
+  nyData.addColumn('number', 'NY Pop');
+  
+  let nyPopulationArray = [];
+  
+  for(i=orYearsNeeded.length-1; i>=0 ; i--){
+    nyPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, nyYearsNeeded[i].Population]);
+  }
+    
+    nyData.addRows(
+      nyPopulationArray
+      );
+  
+  var nyChart = new google.visualization.LineChart(document.getElementById('newYorkChart_div'));
+  nyChart.draw(nyData, options);
+
+
+}
+  
