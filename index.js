@@ -72,13 +72,12 @@ async function drawLineColors() {
     //maryland chart
     var mdData = new google.visualization.DataTable();
     mdData.addColumn('string', 'Year');
-    mdData.addColumn('number', 'OR Pop');
     mdData.addColumn('number', 'MD Pop');
     
     let mdPopulationArray = [];
     
     for(i=orYearsNeeded.length-1; i>=0 ; i--){
-      mdPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, mdYearsNeeded[i].Population]);
+      mdPopulationArray.push([mdYearsNeeded[i].Year, mdYearsNeeded[i].Population]);
     }
     
     mdData.addRows(
@@ -92,7 +91,7 @@ async function drawLineColors() {
         vAxis: {
           title: 'Population'
         },
-    colors: ['#a52714', '#000077'],
+    colors: ['#a52714'],
     width:370,
     height:200
   };
@@ -103,13 +102,12 @@ async function drawLineColors() {
   //washington chart
   var waData = new google.visualization.DataTable();
   waData.addColumn('string', 'Year');
-  waData.addColumn('number', 'OR Pop');
   waData.addColumn('number', 'WA Pop');
   
   let waPopulationArray = [];
   
   for(i=orYearsNeeded.length-1; i>=0 ; i--){
-    waPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, waYearsNeeded[i].Population]);
+    waPopulationArray.push([waYearsNeeded[i].Year, waYearsNeeded[i].Population]);
   }
     
     waData.addRows(
@@ -122,13 +120,12 @@ async function drawLineColors() {
   //california chart
   var caData = new google.visualization.DataTable();
   caData.addColumn('string', 'Year');
-  caData.addColumn('number', 'OR Pop');
   caData.addColumn('number', 'CA Pop');
   
   let caPopulationArray = [];
   
   for(i=orYearsNeeded.length-1; i>=0 ; i--){
-    caPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, caYearsNeeded[i].Population]);
+    caPopulationArray.push([caYearsNeeded[i].Year, caYearsNeeded[i].Population]);
   }
     
     caData.addRows(
@@ -141,13 +138,12 @@ async function drawLineColors() {
   //idaho chart
   var idData = new google.visualization.DataTable();
   idData.addColumn('string', 'Year');
-  idData.addColumn('number', 'OR Pop');
   idData.addColumn('number', 'ID Pop');
   
   let idPopulationArray = [];
   
   for(i=orYearsNeeded.length-1; i>=0 ; i--){
-    idPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, idYearsNeeded[i].Population]);
+    idPopulationArray.push([idYearsNeeded[i].Year, idYearsNeeded[i].Population]);
   }
     
     idData.addRows(
@@ -160,13 +156,12 @@ async function drawLineColors() {
   //alaska chart
   var akData = new google.visualization.DataTable();
   akData.addColumn('string', 'Year');
-  akData.addColumn('number', 'OR Pop');
   akData.addColumn('number', 'AK Pop');
   
   let akPopulationArray = [];
   
   for(i=orYearsNeeded.length-1; i>=0 ; i--){
-    akPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, akYearsNeeded[i].Population]);
+    akPopulationArray.push([akYearsNeeded[i].Year, akYearsNeeded[i].Population]);
   }
     
     akData.addRows(
@@ -179,13 +174,12 @@ async function drawLineColors() {
   //new york chart
   var nyData = new google.visualization.DataTable();
   nyData.addColumn('string', 'Year');
-  nyData.addColumn('number', 'OR Pop');
   nyData.addColumn('number', 'NY Pop');
   
   let nyPopulationArray = [];
   
   for(i=orYearsNeeded.length-1; i>=0 ; i--){
-    nyPopulationArray.push([orYearsNeeded[i].Year, orYearsNeeded[i].Population, nyYearsNeeded[i].Population]);
+    nyPopulationArray.push([nyYearsNeeded[i].Year, nyYearsNeeded[i].Population]);
   }
     
     nyData.addRows(
