@@ -1,0 +1,36 @@
+main {
+  background-color: orange;
+  color: white;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  /* height: 100vh; */
+}
+
+.mainTitle {
+  /* margin-bottom: 30px; */
+}
+.allCharts {
+  font-family:Helvetica;
+}
+.usChartContainer {
+  display:flex;
+  flex-direction: column;
+}
+
+  display:flex;
+  flex-direction: column;
+}
+
+#chart_div {
+  /* border: solid 1px red; */
+  background-color: white;
+  border-radius: 15px;
+  padding-left:40px;
+}
+#chart_div2 {
+  background-color: white;
+  border-radius: 15px;
+  padding-left:40px;
+}
