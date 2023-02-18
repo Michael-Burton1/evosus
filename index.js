@@ -165,7 +165,7 @@ async function drawLineColors(value) {
         vAxis: {
           title: 'Population'
         },
-    colors: ['blue'],
+    colors: ['blue','red','green','orange','lightblue','black','purple','brown','pink'],
     width:370,
     height:200
   };
