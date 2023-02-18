@@ -20,42 +20,23 @@
         <h2 id="usTitle">United States Population</h2>
         <div id="usChart_div"></div>
       </div>
-      <div class="formContainer">
-        <form >
-          <label>form</label>
-          <input type="radio"></input>
-        </form>
-      </div>
       <div class="stateChartContainer">
         <div class="stateContainer">
           <h3 id="stateTitle">Maryland Population</h3>
           <div id="marylandChart_div"></div>
         </div>
-        <div class="stateContainer">
-          <h3 id="stateTitle">Washington Population</h3>
-          <div id="washingtonChart_div"></div>
-        </div>
-        <div class="stateContainer">
-          <h3 id="stateTitle">California Population</h3>
-          <div id="californiaChart_div"></div>
-        </div>
-        <div class="stateContainer">
-          <h3 id="stateTitle">Idaho Population</h3>
-          <div id="idahoChart_div"></div>
-        </div>
-        <div class="stateContainer">
-          <h3 id="stateTitle">Alaska Population</h3>
-          <div id="alaskaChart_div"></div>
-        </div>
-        <div class="stateContainer">
-          <h3 id="stateTitle">New York Population</h3>
-          <div id="newYorkChart_div"></div>
+        <div class="formContainer">
+          <button id='maryland-btn' value="Maryland" onclick="handleClick(this.value)">
+            Maryland
+          </button>
+          <button id='maryland-btn' value="New York" onclick="handleClick(this.value)">
+            New York
+          </button>
         </div>
       </div>
     </div>
   </main>
 </body>
-<script src=".././Api_call/API.js"></script>
 <script src="./index.js"></script>
 
 </html>
