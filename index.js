@@ -11,75 +11,72 @@ async function getStatePopulation(){
   return data
 }
 //create state buttons
+function createStateButtons(){
+  let statesArray = [
+    "Alaska", 
+    "Alabama", 
+    "Arkansas", 
+    "Arizona", 
+    "California", 
+    "Colorado", 
+    "Connecticut", 
+    "District of Columbia", 
+    "Delaware", 
+    "Florida", 
+    "Georgia", 
+    "Hawaii", 
+    "Iowa", 
+    "Idaho", 
+    "Illinois", 
+    "Indiana", 
+    "Kansas", 
+    "Kentucky", 
+    "Louisiana", 
+    "Massachusetts", 
+    "Maryland", 
+    "Maine", 
+    "Michigan", 
+    "Minnesota", 
+    "Missouri", 
+    "Mississippi", 
+    "Montana", 
+    "North Carolina", 
+    "North Dakota", 
+    "Nebraska", 
+    "New Hampshire", 
+    "New Jersey", 
+    "New Mexico", 
+    "Nevada", 
+    "New York", 
+    "Ohio", 
+    "Oklahoma", 
+    "Oregon", 
+    "Pennsylvania", 
+    "Puerto Rico", 
+    "Rhode Island", 
+    "South Carolina", 
+    "South Dakota", 
+    "Tennessee", 
+    "Texas", 
+    "Utah", 
+    "Virginia", 
+    "Vermont", 
+    "Washington", 
+    "Wisconsin", 
+    "West Virginia", 
+    "Wyoming",
+  '']
+    const statebtns = statesArray.map(state => '<button id="' + state + '-btn" value="'+ state + '" onclick="handleClick(this.value)">' + state + '</button>');
+    const myBtnContainer = document.querySelector('.btnContainer');
+    myBtnContainer.innerHTML = statebtns;
+  }
+  
 
 function handleClick(buttonValue) {
   console.log(buttonValue);
   drawLineColors(buttonValue)
 }
-// function createStateButtons(){
-//   let stateArray = [
-//     "Alaska", 
-//     "Alabama", 
-//     "Arkansas", 
-//     "American Samoa", 
-//     "Arizona", 
-//     "California", 
-//     "Colorado", 
-//     "Connecticut", 
-//     "District of Columbia", 
-//     "Delaware", 
-//     "Florida", 
-//     "Georgia", 
-//     "Guam", 
-//     "Hawaii", 
-//     "Iowa", 
-//     "Idaho", 
-//     "Illinois", 
-//     "Indiana", 
-//     "Kansas", 
-//     "Kentucky", 
-//     "Louisiana", 
-//     "Massachusetts", 
-//     "Maryland", 
-//     "Maine", 
-//     "Michigan", 
-//     "Minnesota", 
-//     "Missouri", 
-//     "Mississippi", 
-//     "Montana", 
-//     "North Carolina", 
-//     "North Dakota", 
-//     "Nebraska", 
-//     "New Hampshire", 
-//     "New Jersey", 
-//     "New Mexico", 
-//     "Nevada", 
-//     "New York", 
-//     "Ohio", 
-//     "Oklahoma", 
-//     "Oregon", 
-//     "Pennsylvania", 
-//     "Puerto Rico", 
-//     "Rhode Island", 
-//     "South Carolina", 
-//     "South Dakota", 
-//     "Tennessee", 
-//     "Texas", 
-//     "Utah", 
-//     "Virginia", 
-//     "Virgin Islands", 
-//     "Vermont", 
-//     "Washington", 
-//     "Wisconsin", 
-//     "West Virginia", 
-//     "Wyoming"]
-//     map((stateArray) => {
-//       return <button id='maryland-btn' value="New York" onclick="handleClick(this.value)">
-//       New York
-//     </button>
-//     })
-//   }
-  // console.log('my buttons', createStateButtons);
+  createStateButtons();
 
 //Display charts
 google.charts.load('current', {packages: ['corechart', 'line']});
