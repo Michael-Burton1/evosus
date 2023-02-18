@@ -66,15 +66,30 @@ function createStateButtons(){
     "West Virginia", 
     "Wyoming",
   '']
-    const statebtns = statesArray.map(state => '<button id="' + state + '-btn" value="'+ state + '" onclick="handleClick(this.value)">' + state + '</button>');
+    const statebtns = statesArray.map(state => '<button id="' + state + '-btn" value="'+ state + '" onclick="handleClick(this.value)">' + state + '</button>').join('');
     const myBtnContainer = document.querySelector('.btnContainer');
     myBtnContainer.innerHTML = statebtns;
   }
-  
 
+  function removeItemOnce(arr, value) {
+    var index = arr.indexOf(value);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
+    return arr;
+  } 
+
+const graphedStates =[]
 function handleClick(buttonValue) {
-  console.log(buttonValue);
-  drawLineColors(buttonValue)
+  if (!graphedStates.includes(buttonValue)){
+    console.log(graphedStates);
+    drawLineColors(buttonValue);
+    graphedStates.push(buttonValue);
+  } else {
+    drawLineColors("");
+    removeItemOnce(graphedStates, buttonValue);
+    
+  }
 }
   createStateButtons();
 
@@ -83,6 +98,11 @@ google.charts.load('current', {packages: ['corechart', 'line']});
 google.charts.setOnLoadCallback(drawLineColors);
 
 async function drawLineColors(value) {
+  //if value is not already drawn then value === state name
+  //if value is already drawn then use clear state for value
+    //how do we know if its drawn already????
+    // can I compare this outside of drawlines? I think i should
+
   let res = await getUSPopulation();
   let usPopulationData = res.data;
   let usYearsNeeded = usPopulationData.filter((item => item.Year < 2020 && item.Year > 2012))
