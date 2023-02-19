@@ -1,4 +1,3 @@
-
 //API CALLS
 async function getUSPopulation(){
   const res = await fetch('https://datausa.io/api/data?drilldowns=Nation&measures=Population')
@@ -12,6 +11,7 @@ async function getStatePopulation(){
 }
 //create state buttons
 function createStateButtons(){
+  //makshift db for states
   let statesArray = [
     "Alaska", 
     "Alabama", 
@@ -72,36 +72,35 @@ function createStateButtons(){
   }
 
   function removeItemOnce(arr, value) {
-    var index = arr.indexOf(value);
+    let index = arr.indexOf(value);
     if (index > -1) {
       arr.splice(index, 1);
     }
     return arr;
   } 
+//  function createRows(arr) {
+//   arr.forEach(element =>)
+//  }
 
 const graphedStates =[]
 function handleClick(buttonValue) {
   if (!graphedStates.includes(buttonValue)){
-    console.log(graphedStates);
-    drawLineColors(buttonValue);
     graphedStates.push(buttonValue);
+    drawLineColors();
   } else {
-    drawLineColors("");
+
     removeItemOnce(graphedStates, buttonValue);
-    
+    drawLineColors();
   }
 }
-  createStateButtons();
+
+createStateButtons();
 
 //Display charts
 google.charts.load('current', {packages: ['corechart', 'line']});
 google.charts.setOnLoadCallback(drawLineColors);
 
-async function drawLineColors(value) {
-  //if value is not already drawn then value === state name
-  //if value is already drawn then use clear state for value
-    //how do we know if its drawn already????
-    // can I compare this outside of drawlines? I think i should
+async function drawLineColors() {
 
   let res = await getUSPopulation();
   let usPopulationData = res.data;
@@ -109,90 +108,83 @@ async function drawLineColors(value) {
 
   let stateResults = await getStatePopulation();
   let statePopulationData = stateResults.data;
-  let chosenState = statePopulationData.filter((item => item.State === value));
-  let chosenStateYearsNeeded = chosenState.filter((item => item.Year < 2020 && item.Year > 2012));
+  
 
+  const chosenStatesYearsNeeded = [];
+  graphedStates.forEach(stateName => {
+    let currentState = statePopulationData.filter((item => item.State === stateName));
+    let currentStateYearsNeeded = currentState.filter((item => item.Year < 2020 && item.Year > 2012));
+    chosenStatesYearsNeeded.push(currentStateYearsNeeded);
+  });
+
+  let statePopulationArray = [];
+  
+  for (let i = 0; i < chosenStatesYearsNeeded.length; i++) {
+    let chosenStateYearsNeeded = chosenStatesYearsNeeded[i];
+    for (let j=chosenStateYearsNeeded.length-1; j>=0 ; j--) {
+      if (i === 0) {
+        let singleYearAndData = [];
+        singleYearAndData.push(chosenStateYearsNeeded[j].Year);
+        singleYearAndData.push(chosenStateYearsNeeded[j].Population);
+        statePopulationArray.push(singleYearAndData)
+      } else {
+        statePopulationArray[j].push(chosenStateYearsNeeded[j].Population);
+      }
+    }
+  };
+
+  //US chart
   let usPopulationArray = [];
   let usData = new google.visualization.DataTable();
+
   usData.addColumn('string', 'Year');
   usData.addColumn('number', 'US Pop');
-
-  
   for(i=usYearsNeeded.length-1; i>=0 ; i--){
     usPopulationArray.push([usYearsNeeded[i].Year, usYearsNeeded[i].Population]);
   }
 
-  //US chart
   usData.addRows(
     usPopulationArray
-    );
-    
-    var usOptions = {
+    ); 
+    let usOptions = {
       hAxis: {
         title: 'Year'
       },
       vAxis: {
         title: 'Population'
       },
-      colors: ['red'],
-      // colors: ['#a52714'],
+      colors: ['#a52714'],
       width:700,
-      height:400
-      
+      height:400      
     };
     
-    var usChart = new google.visualization.LineChart(document.getElementById('usChart_div'));
+    let usChart = new google.visualization.LineChart(document.getElementById('usChart_div'));
     usChart.draw(usData, usOptions);
     
-    //state chart
-    var stateData = new google.visualization.DataTable();
+    //states chart
+    let stateData = new google.visualization.DataTable();
     stateData.addColumn('string', 'Year');
-    stateData.addColumn('number', 'clear');
-    graphedStates.forEach(state => stateData.addColumn('number', value));
+    graphedStates.length > 0
+      ? graphedStates.forEach(state => stateData.addColumn('number', state))
+      : stateData.addColumn('number', '');
     
-    let statePopulationArray = [];
-    
-    for(i=chosenStateYearsNeeded.length-1; i>=0 ; i--){
-      statePopulationArray.push([chosenStateYearsNeeded[i].Year, chosenStateYearsNeeded[i].Population]);
-    }
-    
-    graphedStates.forEach(state =>     
-      stateData.addRows(
-        statePopulationArray
-        );
-  
-        var options = {
-          hAxis: {
-            title: 'Year'
-          },
-          vAxis: {
-            title: 'Population'
-          },
-      colors: ['blue','red'],
-      // colors: ['blue','red','green','orange','lightblue','black','purple','brown','pink'],
-      width:370,
-      height:200
-    };
+    stateData.addRows(
+      statePopulationArray
+      );
 
-    )
-  //   stateData.addRows(
-  //     statePopulationArray
-  //     );
-
-  //     var options = {
-  //       hAxis: {
-  //         title: 'Year'
-  //       },
-  //       vAxis: {
-  //         title: 'Population'
-  //       },
-  //   colors: ['blue','red'],
-  //   // colors: ['blue','red','green','orange','lightblue','black','purple','brown','pink'],
-  //   width:370,
-  //   height:200
-  // };
+      let options = {
+        hAxis: {
+          title: 'Year'
+        },
+        vAxis: {
+          title: 'Population'
+        },
+    colors: ['blue','red','green','orange','lightblue','black','purple','brown','pink'],
+    width:370,
+    height:200
+  };
   
-  var stateChart = new google.visualization.LineChart(document.getElementById('marylandChart_div'));
+  let stateChart = new google.visualization.LineChart(document.getElementById('stateChart_div'));
   stateChart.draw(stateData, options);
 
 }
