@@ -116,6 +116,7 @@ async function drawLineColors(value) {
   let usData = new google.visualization.DataTable();
   usData.addColumn('string', 'Year');
   usData.addColumn('number', 'US Pop');
+
   
   for(i=usYearsNeeded.length-1; i>=0 ; i--){
     usPopulationArray.push([usYearsNeeded[i].Year, usYearsNeeded[i].Population]);
@@ -143,10 +144,11 @@ async function drawLineColors(value) {
     var usChart = new google.visualization.LineChart(document.getElementById('usChart_div'));
     usChart.draw(usData, usOptions);
     
-    //maryland chart
+    //state chart
     var stateData = new google.visualization.DataTable();
     stateData.addColumn('string', 'Year');
-    stateData.addColumn('number', value);
+    stateData.addColumn('number', 'clear');
+    graphedStates.forEach(state => stateData.addColumn('number', value));
     
     let statePopulationArray = [];
     
@@ -154,21 +156,41 @@ async function drawLineColors(value) {
       statePopulationArray.push([chosenStateYearsNeeded[i].Year, chosenStateYearsNeeded[i].Population]);
     }
     
-    stateData.addRows(
-      statePopulationArray
-      );
+    graphedStates.forEach(state =>     
+      stateData.addRows(
+        statePopulationArray
+        );
+  
+        var options = {
+          hAxis: {
+            title: 'Year'
+          },
+          vAxis: {
+            title: 'Population'
+          },
+      colors: ['blue','red'],
+      // colors: ['blue','red','green','orange','lightblue','black','purple','brown','pink'],
+      width:370,
+      height:200
+    };
 
-      var options = {
-        hAxis: {
-          title: 'Year'
-        },
-        vAxis: {
-          title: 'Population'
-        },
-    colors: ['blue','red','green','orange','lightblue','black','purple','brown','pink'],
-    width:370,
-    height:200
-  };
+    )
+  //   stateData.addRows(
+  //     statePopulationArray
+  //     );
+
+  //     var options = {
+  //       hAxis: {
+  //         title: 'Year'
+  //       },
+  //       vAxis: {
+  //         title: 'Population'
+  //       },
+  //   colors: ['blue','red'],
+  //   // colors: ['blue','red','green','orange','lightblue','black','purple','brown','pink'],
+  //   width:370,
+  //   height:200
+  // };
   
   var stateChart = new google.visualization.LineChart(document.getElementById('marylandChart_div'));
   stateChart.draw(stateData, options);
