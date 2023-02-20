@@ -54,9 +54,10 @@ main {
 }
 
 .btnContainer {
+  width:80%;
   display:flex;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: space-evenly;
   margin-bottom: 30px;
 }

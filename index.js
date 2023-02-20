@@ -1,10 +1,10 @@
 //create state buttons
-function createStateButtons(){
-    const statebtns = statesArray.map(state => '<button id="' + state + '-btn" class="btn" value="'+ state + '" onclick="handleClick(this.value)">' + state + '</button>').join('');
+function createStatesButtons(){
+    const statebtns = statesArray.map(state => '<button id="' + state.name + '-btn" class="btn" value="'+ state.name + '" onclick="handleClick(this.value)">' + state.name + '</button>').join('');
     const myBtnContainer = document.querySelector('.btnContainer');
     myBtnContainer.innerHTML = statebtns;
   }
-
+  
   function removeItemOnce(arr, value) {
     let index = arr.indexOf(value);
     if (index > -1) {
@@ -30,55 +30,23 @@ function handleClick(buttonValue) {
   }
 }
 
-createStateButtons();
-
 //Display charts
 google.charts.load('current', {packages: ['corechart', 'line']});
 google.charts.setOnLoadCallback(drawLineColors);
 
-async function drawLineColors() {
-
+async function createUSCharts(){
   let res = await getUSPopulation();
   let usPopulationData = res.data;
   let usYearsNeeded = usPopulationData.filter((item => item.Year < 2020 && item.Year > 2012))
-
-  let stateResults = await getStatePopulation();
-  let statePopulationData = stateResults.data;
-  
-
-  const chosenStatesYearsNeeded = [];
-  graphedStates.forEach(stateName => {
-    let currentState = statePopulationData.filter((item => item.State === stateName));
-    let currentStateYearsNeeded = currentState.filter((item => item.Year < 2020 && item.Year > 2012));
-    chosenStatesYearsNeeded.push(currentStateYearsNeeded);
-  });
-
-  let statePopulationArray = [];
-  
-  for (let i = 0; i < chosenStatesYearsNeeded.length; i++) {
-    let chosenStateYearsNeeded = chosenStatesYearsNeeded[i];
-    for (let j=chosenStateYearsNeeded.length-1; j>=0 ; j--) {
-      if (i === 0) {
-        let singleYearAndData = [];
-        singleYearAndData.push(chosenStateYearsNeeded[j].Year);
-        singleYearAndData.push(chosenStateYearsNeeded[j].Population);
-        statePopulationArray.push(singleYearAndData)
-      } else {
-        statePopulationArray[j].push(chosenStateYearsNeeded[j].Population);
-      }
-    }
-  };
-
-  //US chart
-  let usPopulationArray = [];
   let usData = new google.visualization.DataTable();
-
+  let usChart = new google.visualization.LineChart(document.getElementById('usChart_div'));
+  let usPopulationArray = [];
+  
   usData.addColumn('string', 'Year');
   usData.addColumn('number', 'US Pop');
   for(i=usYearsNeeded.length-1; i>=0 ; i--){
     usPopulationArray.push([usYearsNeeded[i].Year, usYearsNeeded[i].Population]);
   }
-
   usData.addRows(
     usPopulationArray
     ); 
@@ -93,21 +61,58 @@ async function drawLineColors() {
       width:700,
       height:400      
     };
-    
-    let usChart = new google.visualization.LineChart(document.getElementById('usChart_div'));
     usChart.draw(usData, usOptions);
-    
-    //states chart
+  }
+  
+  async function createStateCharts(){
+    let stateResults = await getStatePopulation();
+    let statePopulationData = stateResults.data;
     let stateData = new google.visualization.DataTable();
+    let chosenStatesYearsNeeded = [];
+
+    graphedStates.forEach(stateName => {
+      let currentState = statePopulationData.filter((item => item.State === stateName));
+      let currentStateYearsNeeded = currentState.filter((item => item.Year < 2020 && item.Year > 2012));
+      chosenStatesYearsNeeded.push(currentStateYearsNeeded);
+    });
+    let statePopulationArray = [];
+
+    for (let i = 0; i < chosenStatesYearsNeeded.length; i++) {
+      let chosenStateYearsNeeded = chosenStatesYearsNeeded[i];
+      for (let j=chosenStateYearsNeeded.length-1; j>=0 ; j--) {
+        if (i === 0) {
+          let singleYearAndData = [];
+          singleYearAndData.push(chosenStateYearsNeeded[j].Year);
+          singleYearAndData.push(chosenStateYearsNeeded[j].Population);
+          statePopulationArray.push(singleYearAndData)
+        } else {
+          statePopulationArray[j].push(chosenStateYearsNeeded[chosenStateYearsNeeded.length-1-j].Population);
+        }
+      }
+    };
     stateData.addColumn('string', 'Year');
-    graphedStates.length > 0
-      ? graphedStates.forEach(state => stateData.addColumn('number', state))
-      : stateData.addColumn('number', '');
+    if (graphedStates.length > 0) {
+      for (let l=0; l<=graphedStates.length-1; l++){
+        let stateIndex;
+        for (let m=0; m<=statesArray.length-1; m++){
+          if (graphedStates[l] !== statesArray[m].name){           
+            continue;
+          } else {
+            stateIndex = m;
+            break;            
+          }  
+        }
+        stateData.addColumn('number', statesArray[stateIndex].abbreviation
+        )
+      } 
+    } else {
+      stateData.addColumn('number', '');
+    }
     
     stateData.addRows(
       statePopulationArray
       );
-
+      
       let options = {
         hAxis: {
           title: 'Year'
@@ -115,13 +120,20 @@ async function drawLineColors() {
         vAxis: {
           title: 'Population'
         },
-    colors: ['blue','red','green','orange','lightblue','black','purple','brown','pink'],
-    width:370,
-    height:200
-  };
-  
-  let stateChart = new google.visualization.LineChart(document.getElementById('stateChart_div'));
-  stateChart.draw(stateData, options);
-
-}
-  
+        colors: ['blue','red','green','orange','lightblue','black','purple','brown','pink'],
+        width:370,
+        height:200
+      };
+      
+      let stateChart = new google.visualization.LineChart(document.getElementById('stateChart_div'));
+      stateChart.draw(stateData, options);
+      
+    }
+    
+    async function drawLineColors() {
+      createUSCharts();
+      createStateCharts();
+    }
+    
+    
+    createStatesButtons();
