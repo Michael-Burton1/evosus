@@ -1,15 +1,3 @@
-//API CALLS
-async function getUSPopulation(){
-  const res = await fetch('https://datausa.io/api/data?drilldowns=Nation&measures=Population')
-  const data = await res.json();
-  return data
-}
-async function getStatePopulation(){
-  const res = await fetch('https://datausa.io/api/data?drilldowns=State&measures=Population')
-  const data = await res.json();
-  return data
-}
-
 //create state buttons
 function createStateButtons(){
     const statebtns = statesArray.map(state => '<button id="' + state + '-btn" class="btn" value="'+ state + '" onclick="handleClick(this.value)">' + state + '</button>').join('');
@@ -24,12 +12,14 @@ function createStateButtons(){
     }
     return arr;
   } 
-//  function createRows(arr) {
-//   arr.forEach(element =>)
-//  }
+  function toggleActive(btn) {
+    btn.classList.toggle('active');
+  }
 
 const graphedStates =[]
 function handleClick(buttonValue) {
+  let clickedBtn = document.getElementById(`${buttonValue}-btn`);
+  toggleActive(clickedBtn);
   if (!graphedStates.includes(buttonValue)){
     graphedStates.push(buttonValue);
     drawLineColors();

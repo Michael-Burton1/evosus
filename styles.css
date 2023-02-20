@@ -18,6 +18,13 @@ main {
   margin: 5px;
 }
 
+.btn:hover {
+  background-color: grey;
+}
+
+.btn.active {
+  background-color: grey;
+}
 .usChartContainer {
   display: flex;
   flex-direction: column;
